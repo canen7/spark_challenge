@@ -1,0 +1,171 @@
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript" src='calculator.js'></script>
+</head>
+<body>
+<h1>The code is in the script tag, check it ...</h1>
+</body>
+<script type="text/javascript">
+
+
+function isNumber(char)
+	{return (!isNaN(char));	
+}
+function isString(input){
+	if (input.length == 0) {return false}
+	return (typeof(input) == 'string');
+}
+function isEven(number){
+	if (number%2 == 0){ 
+		return true 
+	} else { 
+		return false
+	}
+}
+function isOperator(char){
+	var isOperator = false;
+	if (char == '*' || char == '/' || char =='+' || char == '-' || char == '%') {
+		isOperator = true;
+	}
+	return isOperator;
+}
+function isMainOperator(char){
+	var isOperator = false;
+	if (char == '*' || char == '/' || char == '%') {
+		isOperator = true;
+	}
+	return isOperator;
+}
+function isMultiply(char){
+	var isOperator = false;
+	if (char == '*' || char == '/' || char == '%') {
+		isOperator = true;
+	}
+	return isOperator;
+}
+//checks for each operator
+function isMultiply(char){
+	if (char == '*') {return true}
+}
+function isDivide(char){
+	if (char == '/') {return true}
+}
+function isModulus(char){
+	if (char == '%') {return true}
+}
+function isSum(char){
+	if (char == '+') {return true}
+}
+function isSubtract(char){
+	if (char == '-') {return true}
+}
+// validate input
+function validateInput(string){
+	if ( !isString(string) || string.length < 3 || !isNumber(string[0]) ){
+		return false
+	} else {
+		var valid = true
+		var i = 0;
+		//check that after each operator we have a number
+		while (i < string.length-1) {
+			if ( isOperator(i) && isOperator(i+1) ){
+				valid = false;
+			}
+			i++;	
+		}
+		return valid;
+	}
+}
+//objet which contains methods to use for each operator
+operations = {
+	
+	pos:'',
+	mult:'',
+	result:'',
+	
+	multiply: function(string, operatorPosition){
+		var temp='';
+		for (var i = 0; i<operatorPosition - 1;i++){
+			temp+=string[i];
+		}
+		temp += string[operatorPosition - 1 ] * string[operatorPosition + 1 ]; 
+		for (var i = operatorPosition + 2; i<string.length; i++){
+			temp+= string[i];
+		}
+		console.log('temp; ', temp);
+		return temp;
+	},
+	divide: function(string, operatorPosition){
+		var temp='';
+		for (var i = 0; i<operatorPosition - 1;i++){
+			temp+=string[i];
+		}
+		temp += string[operatorPosition - 1 ] / string[operatorPosition + 1 ]; 
+		for (var i = operatorPosition + 2; i<string.length; i++){
+			temp+= string[i];
+		}
+		console.log('temp; ', temp);
+		return temp;
+
+	},
+	sum: function(){
+
+	},
+	substract: function(){
+
+	}
+}
+
+
+
+//test validateInput()
+// console.log('validate: 3+3-1*8 , alvaro, 123, *4+4')
+// console.log(validateInput('3+3-1*8'));
+// console.log(validateInput('alvaro'));
+// console.log(validateInput('123'));
+// console.log(validateInput('*4+4'));
+
+function calculator(string){
+	var temp;
+	//validate
+
+	//first look for first priority operators
+	for (var i = 0; i < string.length; i++){
+		if (isMultiply(string[i])) {
+			string = operations.multiply(string,i)
+		}
+	}
+
+	for (var i = 0; i < string.length; i++){
+		if (isDivide(string[i])) {
+			string = operations.divide(string,i)
+		}
+	}
+
+	for (var i = 0; i < string.length; i++){
+		if (isModulus(string[i])) {
+			string = operations.modulus(string,i)
+		}
+	}
+
+	for (var i = 0; i < string.length; i++){
+		if (isSum(string[i])) {
+			string = operations.sum(string,i)
+		}
+	}
+
+	for (var i = 0; i < string.length; i++){
+		if (isSubtract(string[i])) {
+			string = operations.subtract(string,i)
+		}
+	}
+	return string
+	
+}
+
+calculator('3*4/3*8');
+
+
+</script>
+</html>
