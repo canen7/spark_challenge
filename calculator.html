@@ -1,7 +1,7 @@
 <html>
 <head>
 	<title></title>
-	<script type="text/javascript" src='calculator.js'></script>
+	<script type="text/javascript" src=''></script>
 </head>
 <body>
 <h1>The code is in the script tag, check it ...</h1>
@@ -9,20 +9,12 @@
 <script type="text/javascript">
 
 
-function isNumber(char)
-	{return (!isNaN(char));	
-}
-function isString(input){
-	if (input.length == 0) {return false}
-	return (typeof(input) == 'string');
-}
-function isEven(number){
-	if (number%2 == 0){ 
-		return true 
-	} else { 
-		return false
-	}
-}
+// VALIDATION
+function isNumber(char){return (!isNaN(char))}
+function isString(input){if (input.length == 0) {return false} return (typeof(input) == 'string')}
+function isEven(number){if (number%2 == 0){ return true } else { return false } }
+
+// OPERATORS CHECKS
 function isOperator(char){
 	var isOperator = false;
 	if (char == '*' || char == '/' || char =='+' || char == '-' || char == '%') {
@@ -30,37 +22,71 @@ function isOperator(char){
 	}
 	return isOperator;
 }
-function isMainOperator(char){
-	var isOperator = false;
-	if (char == '*' || char == '/' || char == '%') {
-		isOperator = true;
+
+// checks for each operator
+function isMultiply(char){  if (char == '*') { return true }}
+function isDivide(char){ if (char == '/') { return true}}
+function isModulus(char){ if (char == '%') {return true}}
+function isSum(char){ if (char == '+') {return true}}
+function isSubtract(char){if (char == '-') {return true}}
+
+function numerizeArr(arr){
+		for (var i = 0; i<arr.length; i++){
+			if (isNumber(arr[i])) { arr[i] = Number(arr[i]) }
+		}
+		return arr
+}
+
+// operations object with methods (multiply, divide, sum, subtract) on arrays
+ops = {
+	
+	multiply: function(arr, opPos){
+		var temp=[];		
+		for (var i = 0; i<opPos - 1;i++){
+			temp.push(arr[i]);
+		}
+		temp.push( Number(arr[opPos - 1 ]) * Number(arr[opPos + 1 ]) ); 
+		for (var i = opPos + 2; i<arr.length; i++){
+			temp.push(arr[i]);
+		}
+		return temp;
+	},
+	divide: function(arr, opPos){
+		var temp=[];
+		for (var i = 0; i<opPos - 1;i++){
+			temp.push(arr[i]);
+		}
+		temp.push( Number(arr[opPos - 1 ]) / Number(arr[opPos + 1 ]) ); 
+		for (var i = opPos + 2; i<arr.length; i++){
+			temp.push(arr[i]);
+		}
+		return temp;
+	},
+	sum: function(arr,opPos){
+		var temp=[];
+		for (var i = 0; i<opPos - 1;i++){
+			temp.push(arr[i]);
+		}
+		temp.push( Number(arr[opPos - 1 ]) + Number(arr[opPos + 1 ]) ); 
+		for (var i = opPos + 2; i<arr.length; i++){
+			temp.push(arr[i]);
+		}
+		return temp;
+	},
+	subtract: function(arr,opPos){
+		var temp=[];
+		for (var i = 0; i<opPos - 1;i++){
+			temp.push(arr[i]);
+		}
+		temp.push( Number(arr[opPos - 1 ]) - Number(arr[opPos + 1 ]) ); 
+		for (var i = opPos + 2; i<arr.length; i++){
+			temp.push(arr[i]);
+		}
+		return temp;
 	}
-	return isOperator;
 }
-function isMultiply(char){
-	var isOperator = false;
-	if (char == '*' || char == '/' || char == '%') {
-		isOperator = true;
-	}
-	return isOperator;
-}
-//checks for each operator
-function isMultiply(char){
-	if (char == '*') {return true}
-}
-function isDivide(char){
-	if (char == '/') {return true}
-}
-function isModulus(char){
-	if (char == '%') {return true}
-}
-function isSum(char){
-	if (char == '+') {return true}
-}
-function isSubtract(char){
-	if (char == '-') {return true}
-}
-// validate input
+
+// validates that input is a string of length 3 or greater with first element a number
 function validateInput(string){
 	if ( !isString(string) || string.length < 3 || !isNumber(string[0]) ){
 		return false
@@ -77,94 +103,107 @@ function validateInput(string){
 		return valid;
 	}
 }
-//objet which contains methods to use for each operator
-operations = {
-	
-	pos:'',
-	mult:'',
-	result:'',
-	
-	multiply: function(string, operatorPosition){
-		var temp='';
-		for (var i = 0; i<operatorPosition - 1;i++){
-			temp+=string[i];
-		}
-		temp += string[operatorPosition - 1 ] * string[operatorPosition + 1 ]; 
-		for (var i = operatorPosition + 2; i<string.length; i++){
-			temp+= string[i];
-		}
-		console.log('temp; ', temp);
-		return temp;
-	},
-	divide: function(string, operatorPosition){
-		var temp='';
-		for (var i = 0; i<operatorPosition - 1;i++){
-			temp+=string[i];
-		}
-		temp += string[operatorPosition - 1 ] / string[operatorPosition + 1 ]; 
-		for (var i = operatorPosition + 2; i<string.length; i++){
-			temp+= string[i];
-		}
-		console.log('temp; ', temp);
-		return temp;
 
-	},
-	sum: function(){
+// test validateInput()
+console.log('test validateInput(): 3+3-1*8 , alvaro, 123, *4+4 ', [validateInput('3+3-1*8'),validateInput('alvaro'),validateInput('123'),validateInput('*4+4')])
 
-	},
-	substract: function(){
-
+// get operators position from string
+function opPos(string){
+	pos = [];
+	for (var i=0; i<string.length; i++){
+		if ( isOperator(string[i]) ){
+			pos.push(i);
+		}
 	}
+	return pos
 }
 
+// test opPos
+console.log("test opPos('43+37*835/32'):  ", opPos('43+37*835/32'));
+console.log("test opPos('3+2-1+7*22/13'): ", opPos('3+2-1+7*22/13'))
 
-
-//test validateInput()
-// console.log('validate: 3+3-1*8 , alvaro, 123, *4+4')
-// console.log(validateInput('3+3-1*8'));
-// console.log(validateInput('alvaro'));
-// console.log(validateInput('123'));
-// console.log(validateInput('*4+4'));
-
-function calculator(string){
-	var temp;
-	//validate
-
-	//first look for first priority operators
-	for (var i = 0; i < string.length; i++){
-		if (isMultiply(string[i])) {
-			string = operations.multiply(string,i)
+// input string -> eq array, actionable array with numbers and operators
+function eqArr(string){
+	var eqArr=[];
+	var pos = opPos(string);
+	var tempStr=[];
+	for (var i=0; i<pos.length; i++){
+		tempStr ='';
+		var j;
+		if (i==0) { j=0 } else { j=pos[i-1]+1 }
+		for (j;j<pos[i]; j++){
+			tempStr += string[j]; 
 		}
+		eqArr.push(tempStr);
+		eqArr.push(string[pos[i]]);
+		//console.log(eqArr);
 	}
-
-	for (var i = 0; i < string.length; i++){
-		if (isDivide(string[i])) {
-			string = operations.divide(string,i)
-		}
+	tempArr = [;
+	// console.log('initial index: ', pos[pos.length-1]+1);
+	// console.log('string', string);
+	// console.log('pos: ',pos);
+	//console.log('pos.last: ',pos.last);
+	//console.log('end condition smaller than: ',string.length );
+	for (var i = (pos[pos.length-1]+1); i<string.length ; i++ ){
+		tempArr += string[i];
 	}
-
-	for (var i = 0; i < string.length; i++){
-		if (isModulus(string[i])) {
-			string = operations.modulus(string,i)
-		}
-	}
-
-	for (var i = 0; i < string.length; i++){
-		if (isSum(string[i])) {
-			string = operations.sum(string,i)
-		}
-	}
-
-	for (var i = 0; i < string.length; i++){
-		if (isSubtract(string[i])) {
-			string = operations.subtract(string,i)
-		}
-	}
-	return string
-	
+	// console.log('eqArray bef last push', eqArr);
+	// console.log('tempArr: ',tempArr);
+	eqArr.push(tempArr);
+	//console.log(eqArr);
+	return eqArr;
 }
+// test eqArray
+console.log("test eqArr('43+10*10+2/2+1001'): ", eqArr('43+10*10+2/2+1001'));
 
-calculator('3*4/3*8');
+function calculator(str){
+	arr = eqArr(str);
+	console.log('initial', arr);
+	var len = arr.length;
+	arr = numerizeArr(arr);
+	for (var i = 0; i < len; i++){
+		if (isMultiply(arr[i])) {
+			arr = ops.multiply(arr,i);
+			i = 0;
+		}
+	}
+	console.log('after mult ', arr)
+	for (var i = 0; i < len; i++){
+		if (isDivide(arr[i])) {
+			arr = ops.divide(arr,i);
+			i=0;
+		}
+	}
+	console.log('after divide',arr)
+	for (var i = 0; i < len; i++){
+		if (isModulus(arr[i])) {
+			arr = ops.modulus(arr,i);
+			i=0;
+		}
+	}
+	console.log('after modulus ',arr)
+	for (var i = 0; i < len; i++){
+		if (isSum(arr[i])) {
+			arr = ops.sum(arr,i)
+			i=0;
+		}
+	}
+	console.log('after sum ', arr);
+	for (var i = 0; i < len; i++){
+		if (isSubtract(arr[i])) {
+			arr = ops.subtract(arr,i)
+			i=0;
+		}
+	}
+	console.log('after sub - final ',arr)
+	return arr	
+}
+// console.log('calculator(["43", "+", "10", "*", "10", "+","1000"]): ', calculator(["43", "+", "10", "*", "10", "+","1000"]));
+console.log('test calculator(["200", "+", "0", "/", "10", "*","8","+","1000"]): ', calculator(["200", "+", "0", "/", "10", "*","8","+","1000"]));
+
+var userInput = prompt('give me a equation please');
+console.log('calculating your stuff');
+calculator(userInput); 
 
 
 </script>
